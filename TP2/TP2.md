@@ -98,14 +98,14 @@ manipulation par leurs adresses (en utilisant les pointeurs).
 Par exemple, vous avez les deux variables suivantes:
 ```
    int i = 0xa47865ff; 
-   float f = 2;
+   float f = 1;
 ```
 
-Vous devez afficher les valeurs en hexadécimal,
+Vous devez afficher les valeurs des octets en hexadécimal,
 comme indiqué ci-dessous
 ```
-   i : a47865ff; 
-   f : 40000000
+   i : a4 78 65 ff; 
+   f : 40 0 0 0
 ```
 
 Pour plus d'informations sur la manière dont les nombres réels sont stockés dans les variables float et double, consultez la norme IEEE 754.
