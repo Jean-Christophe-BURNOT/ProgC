@@ -19,7 +19,8 @@
 * exercice 1.6 et 1.9 (surtout le dernier) m'on demandé plus de reflections les precedents etait tres peu interessant et difficiles mais permettent une decouverte du language.
 
 ### Antoine
-* Aucune difficultés à part le dernier exercice
+* Algorithmiquement le do/while fut un peu complexe
+* Le dernier exercice fut difficile
 
 # Commentaires
 * L'exercice 2 est plus sophistiqué je me suis amusé à faire un choix utilisateur.

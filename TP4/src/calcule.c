@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "operateur.h"
+#include "operator.h"
 /*
  * Code principal qui utilise une
  * Bibliothèque pour fonctionner

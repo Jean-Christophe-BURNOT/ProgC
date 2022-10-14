@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "operateur.h"
+#include "operator.h"
 /*
  * Code principal qui utilise une
  * Bibliothèque pour fonctionner
