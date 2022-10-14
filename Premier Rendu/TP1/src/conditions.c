@@ -1,27 +1,33 @@
 #include <stdio.h>
-#include <stdlib.h>
-/*
- * Code qui permet d'utiliser des structures itératives
- */
 
-int main()
-{
-    //On parcours tous les indices jusqu'a 1000
-    for(int toto=1; toto<=1000; toto++)
-    {
-        //On met la négation pour avoir un retour à 1 et passer dans le if
-        if (!(toto%2) && !(toto%15))
-        {
-            printf("%d est divisible par 2 et 15\n", toto);
-        }
-        if (!(toto%103) || !(toto%105))
-        {
-            printf("%d est divisible par 103 ou 105\n", toto);
-        }
-        if ((!(toto%7) || !(toto%5)) && (toto%3))
-        {
-            printf("%d est divisible par 7 ou 5, mais pas par 3\n", toto);
-        }
-    }
-    return 0;
+/*
+* Programme permettant de déterminer la divisibilité des
+* nombres de 0 à 10000 tout en se familiarisant avec
+* les conditions logiques
+*/
+
+int main() {
+
+	for (int i=0; i<1000; i++) {
+		if (i % 2 && i % 15) {
+			printf("%i, ", i);
+		}
+	}
+	printf("\nSont divisibles par 2 et 15\n");
+	
+	for (int i=0; i<1000; i++) {
+		if (i % 103 == 0 || i % 107) {
+			printf("%i, ", i);
+		}
+	}
+	printf("\nSont divisibles par 103 ou 107\n");	
+
+	for (int i=0; i<1000; i++) {
+		if ( (i % 103 == 0 || i % 107) && (i % 3 != 0)) {
+			printf("%i, ", i);
+		}
+	}
+	printf("\nSont divisibles par 7 ou 5 mais pas 3\n");
+
+	return 0;
 }
