@@ -1,37 +1,42 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "operateur.h"
 /*
  * Code principal qui utilise une
  * Bibliothèque pour fonctionner
  */
 
-int main(int argc, char *argv[])
+int main(int argc, char **argv)
 {
-	switch(argv[1])
+	// Juste pour enlever le warning
+	argc++;
+	int a = atoi(argv[2]);
+	int b = atoi(argv[3]);
+	switch(argv[1][0])
 	{
 		case '+':
-			printf("Le resultat est %d", somme(argv[2], argv[3]);
+			printf("Le resultat est %d", somme(a, b));
 			break;
 		case '-':
-			printf("Le resultat est %d", difference(argv[2], argv[3]);
+			printf("Le resultat est %d", difference(a, b));
 			break;
 		case '*':
-			printf("Le resultat est %d", produit(argv[2], argv[3]);
+			printf("Le resultat est %d", produit(a, b));
 			break;
 		case '/':
-			printf("Le resultat est %d", quotient(argv[2], argv[3]);
+			printf("Le resultat est %d", quotient(a, b));
 			break;
 		case '%':
-			printf("Le resultat est %d", modulo(argv[2], argv[3]);
+			printf("Le resultat est %d", modulo(a, b));
 			break;
 		case '&':
-			printf("Le resultat est %d", et(argv[2], argv[3]);
+			printf("Le resultat est %d", et(a, b));
 			break;
 		case '|':
-			printf("Le resultat est %d", ou(argv[2], argv[3]);
+			printf("Le resultat est %d", ou(a, b));
 			break;
 		case '~':
-			printf("Le resultat est %d", negation(argv[2]);
+			printf("Le resultat est %d", negation(a));
 			break;
 	}
 	return 0;
