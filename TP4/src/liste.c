@@ -29,25 +29,33 @@ int main()
 	struct liste_couleurs case10;
 	case9.suivant = &case10;
 	case10.suivant = NULL;
-	//On initialise juste une couleur (le reste osef)
+	//On initialise quelques couleurs (le reste osef)
 	case7.data.R = 0x6c;
 	case7.data.G = 0xf2;
-	case7.data.B = 0xee
+	case7.data.B = 0xee;
 	case7.data.A = 0xff;
-	//definition des pointeurs
-	struct liste_couleurs *pointeur_element = &case1;
-	struct couleur *pointeur_couleur = &case1.data;
-	//appels des fonctions
-
+	case8.data.R = 0x6c;
+	case8.data.G = 0xf2;
+	case8.data.B = 0xee;
+	case8.data.A = 0xff;
+	case9.data.R = 0xf2;
+	case9.data.G = 0xee;
+	case9.data.B = 0xff;
+	case9.data.A = 0xff;
+	//Test fonction parcours
+	//definition des pointeurs (optionnel on pourrait juste envoyer l'adresse)
+	liste_couleurs *pointeur_chaine = &case1;
+	//appels de la fonction
+	parcours(pointeur_chaine);
+	//Test fonction insertion 
+	//definition du pointeur manquant
+	//appels de la fonction
+	//on reaffiche la liste avec parcours()
 	return 0;
 }
 
-void insertion()
+// Fonction qui prend un pointeur de couleur et affiche la liste
+void parcours(liste_couleurs *pointeur_chaine)
 {
-}
-
-void parcours(pointeur)
-{
-	struct liste_
-	printf("R:%x\tG:%x\tB:%x\tA:%x\t",);
+	printf("R:%x\tG:%x\tB:%x\tA:%x\t",pointeur_chaine->data.R,pointeur_chaine->data.G,pointeur_chaine->data.B,pointeur_chaine->data.A);
 }
