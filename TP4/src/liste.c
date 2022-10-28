@@ -8,7 +8,7 @@
  */
 int main()
 {   
-	//Création de la liste chainée en faire 10
+	//Création de la liste chainée en faire 10 (j'ai fait le typedef après)
 	struct liste_couleurs case1;
 	struct liste_couleurs case2;
 	case1.suivant = &case2;
@@ -48,14 +48,50 @@ int main()
 	//appels de la fonction
 	parcours(pointeur_chaine);
 	//Test fonction insertion 
-	//definition du pointeur manquant
+	//separation visuelle
+	printf("\n__________On ajoute une couleur:__________\n\n");
+	//definition d'une couleur et du pointeur manquant
+	couleur ajout = {0xff,0xf2,0xf3,0xf4};
+	couleur *pointeur_couleur = &ajout;
+	//On remet le premier pointeur à la première valeur
+	pointeur_chaine = &case1;
 	//appels de la fonction
+	insertion(pointeur_couleur, pointeur_chaine);
 	//on reaffiche la liste avec parcours()
+	parcours(pointeur_chaine);
 	return 0;
 }
 
 // Fonction qui prend un pointeur de couleur et affiche la liste
 void parcours(liste_couleurs *pointeur_chaine)
 {
-	printf("R:%x\tG:%x\tB:%x\tA:%x\t",pointeur_chaine->data.R,pointeur_chaine->data.G,pointeur_chaine->data.B,pointeur_chaine->data.A);
+	do
+	{
+		printf("R:%x\tG:%x\tB:%x\tA:%x\n",pointeur_chaine->data.R,pointeur_chaine->data.G,pointeur_chaine->data.B,pointeur_chaine->data.A);
+		pointeur_chaine = pointeur_chaine->suivant;
+	}
+	while(pointeur_chaine->suivant != NULL);
+	//print le dernier élément
+	printf("R:%x\tG:%x\tB:%x\tA:%x\n",pointeur_chaine->data.R,pointeur_chaine->data.G,pointeur_chaine->data.B,pointeur_chaine->data.A);
+}
+
+//Fonction qui prend un pointeur de couleur
+// et le pointeur de notre liste chainé
+// elle ajoute notre couleur comme dernier élément d'une liste
+void insertion(couleur *pointeur_couleur, liste_couleurs *pointeur_chaine)
+{
+	//amène le pointeur au dernier élément avec un for on pourrait faire une insertion n'importe où
+	do
+	{
+		pointeur_chaine = pointeur_chaine->suivant;
+	}
+	while(pointeur_chaine->suivant != NULL);
+	
+	liste_couleurs nouvel_element;
+	nouvel_element.data.R = pointeur_couleur->R;
+	nouvel_element.data.G = pointeur_couleur->G;
+	nouvel_element.data.B = pointeur_couleur->B;
+	nouvel_element.data.A = pointeur_couleur->A;
+	nouvel_element.suivant = NULL;
+	pointeur_chaine->suivant = &nouvel_element;
 }
