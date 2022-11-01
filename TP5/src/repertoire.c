@@ -3,6 +3,10 @@
 #include <string.h>
 #include <dirent.h>
 #include "repertoire.h"
+
+#ifndef MAX
+#define MAX 1000
+#endif
 /*
  * Code qui parcours un répertoire saisi par l'utilisateur
  */
@@ -12,7 +16,7 @@ int main()
 	char input[256];
 	printf("Repertoire à afficher (Chemin absolu)\n");
 	scanf("%s", input);
-	lire_dossier_recursif(input);
+	lire_dossier_iteratif(input);
 	return 0;
 }
 
@@ -54,4 +58,36 @@ void lire_dossier_recursif(char *input)
 	}
 }
 
-void lire_dossier_iteratif
+void lire_dossier_iteratif(char * nom)
+{
+	char * tableau[MAX];
+	tableau[0] = nom;
+	int compteur = 1;
+	DIR *dp;
+	struct dirent *dirp;
+	for (int i=0; i < compteur; i++)
+	{
+		printf("%s\n",tableau[i]);
+		dp = opendir(tableau[i]);
+		while ((dirp = readdir(dp)) != NULL)
+		{
+			char * name = dirp->d_name;
+			printf("%s\n", name);
+			if ((dirp->d_type == DT_DIR)&&(strcmp(name ,".") != 0 )&&(strcmp(name ,"..") != 0 ))
+			{
+				char * path;
+				path = malloc(sizeof(char)*(strlen(name)+strlen(tableau[i]))+2);
+				path = strcat(path ,tableau[i]);
+				path = strcat(path ,"/");
+				path = strcat(path,name);
+				printf("%s\n",path);
+				if (compteur < MAX)
+				{
+					tableau[compteur] = path;
+					compteur++;
+				}             
+			}
+		}
+		closedir(dp);
+	}
+}
