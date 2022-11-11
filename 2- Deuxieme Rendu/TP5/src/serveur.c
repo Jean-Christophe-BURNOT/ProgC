@@ -15,7 +15,10 @@
 #include <unistd.h>
 
 #include "serveur.h"
-
+/*
+ * Permet de lancer un serveur qui intéragit avec un client
+ * Il peut effectuer un calcul ou répondre a un message
+ */
 
 int calcul(char op,int num1,int num2){
   float res;

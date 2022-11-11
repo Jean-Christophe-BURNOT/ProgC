@@ -16,9 +16,15 @@
 
 #include "serveur.h"
 
-void plot(char *data)
-{
+//////////////////////////////////////////////////////////////////////////////////////////
 
+/*
+* Afficher les couleurs données sous forme de cercle
+*/
+
+void plot(char *data, int nb_colors)
+{
+  printf("Plotting: %s\n", data);
   // Extraire le compteur et les couleurs RGB
   FILE *p = popen("gnuplot -persist", "w");
   printf("Plot\n");
@@ -29,7 +35,7 @@ void plot(char *data)
   fprintf(p, "set xrange [-15:15]\n");
   fprintf(p, "set yrange [-15:15]\n");
   fprintf(p, "set style fill transparent solid 0.9 noborder\n");
-  fprintf(p, "set title 'Top 10 colors'\n");
+  fprintf(p, "set title 'Top %d colors'\n", nb_colors);
   fprintf(p, "plot '-' with circles lc rgbcolor variable\n");
   while (1)
   {
@@ -48,19 +54,25 @@ void plot(char *data)
     else
     {
       // Le numéro 36, parceque 360° (cercle) / 10 couleurs = 36
-      fprintf(p, "0 0 10 %d %d 0x%s\n", (count - 1) * 36, count * 36, token + 1);
+      int color_angle = 360/nb_colors;
+      fprintf(p, "0 0 10 %d %d 0x%s\n", (count - 1) * color_angle, count * color_angle, token + 1);
     }
     count++;
   }
   fprintf(p, "e\n");
   printf("Plot: FIN\n");
   pclose(p);
+
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////////
 
 /* renvoyer un message (*data) au client (client_socket_fd)
  */
 int renvoie_message(int client_socket_fd, char *data)
-{
+{ 
+  printf("----- RESPONSE -----\n");
+  printf("%s\n", data);
   int data_size = write(client_socket_fd, (void *)data, strlen(data));
 
   if (data_size < 0)
@@ -70,6 +82,102 @@ int renvoie_message(int client_socket_fd, char *data)
   }
   return (EXIT_SUCCESS);
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+int calculate(int client_socket_fd, char *data) {
+  
+  float a, b, result;
+
+  char op = data[strlen("calcule: ")];
+  //printf("op: %c\n", op);
+
+  char stra[16];
+  memset(stra, 0, sizeof stra);
+  char *ptra = stra;
+
+  char strb[16];
+  memset(strb, 0, sizeof strb);
+  char *ptrb = strb;
+
+  int spacecount = 0;
+  for (int i=0; i < (int) strlen(data); i++) {
+
+    /* a filter had to be implemented because of parasite
+    * values hindering the conversion process
+    */
+    if (! (data[i] == '0' || 
+           data[i] == '1' ||
+           data[i] == '2' ||
+           data[i] == '3' ||
+           data[i] == '4' ||
+           data[i] == '5' ||
+           data[i] == '6' ||
+           data[i] == '7' ||
+           data[i] == '8' ||
+           data[i] == '9' ||
+           data[i] == '.' ||
+           data[i] == ',' ||
+           data[i] == ' ')) {
+            continue;
+           }
+
+
+    if (data[i] == ' ') {
+      spacecount++;
+      continue;
+    }
+    
+    if (spacecount == 2) {
+      *(ptra++) = data[i];
+    }
+    if (spacecount == 3) {
+      *(ptrb++) = data[i];
+    }
+  }
+
+  sscanf(stra, "%f", &a);
+  sscanf(strb, "%f", &b);
+
+  //printf("a: %s -> %f\n", stra, a);
+  //printf("b: %s -> %f\n", strb, b);
+
+
+  printf("Calculating: %c %f %f\n", op, a, b);
+  switch (op) {
+    case '+':
+      result =  a + b;
+      break;
+
+    case '-':
+      result =  a - b;
+      break;
+
+    case '*':
+      result = a * b;
+      break;
+
+    case '/':
+      result = a / b;
+      break;
+
+    default:
+      printf("'%c' operation not implemented", op);
+      break;
+  }
+
+  // la réinitialisation de l'ensemble des données
+  size_t size = sizeof(data);
+  memset(data, 0, size);
+
+  sprintf(data, "%f", result);
+
+  renvoie_message(client_socket_fd, data);
+  return 0;
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
 
 /* accepter la nouvelle connection d'un client et lire les données
  * envoyées par le client. En suite, le serveur envoie un message
@@ -89,41 +197,66 @@ int recois_envoie_message(int socketfd)
     perror("accept");
     return (EXIT_FAILURE);
   }
-
+  
   // la réinitialisation de l'ensemble des données
-  memset(data, 0, sizeof(data));
+    memset(data, 0, sizeof(data));
 
-  // lecture de données envoyées par un client
-  int data_size = read(client_socket_fd, (void *)data, sizeof(data));
+  while (1) {
 
-  if (data_size < 0)
-  {
-    perror("erreur lecture");
-    return (EXIT_FAILURE);
+    // lecture de données envoyées par un client
+    int data_size = read(client_socket_fd, (void *)data, sizeof(data));
+
+    if (data_size == 0) {
+      continue;
+    }
+
+    if (data_size < 0)
+    {
+      perror("erreur lecture");
+      return (EXIT_FAILURE);
+    }
+
+    /*
+    * extraire le code des données envoyées par le client.
+    * Les données envoyées par le client peuvent commencer par le mot "message :" ou un autre mot.
+    * Si le message commence par "plot:", la première valeur sera le nombre de couleurs
+    */
+    printf("----- REQUEST -----\n");
+    printf("%s\n", data);
+
+    // Si le message commence par le mot: 'message:'
+    if (strncmp(data, "message:", strlen("message:")) == 0)
+    { 
+      //printf("Message recieved\n");
+      renvoie_message(client_socket_fd, data);
+    }
+    else if (strncmp(data, "couleurs:", strlen("couleurs:")) == 0)
+    { 
+      //printf("Colors recieved\n");
+      int nb_colors = 0;
+      char colors_data[1024];
+      sscanf(data, "couleurs:%d,%s", &nb_colors, colors_data);
+
+      plot(colors_data, nb_colors);
+    }
+    else if (strncmp(data, "calcule:", strlen("calcule:")) == 0) 
+    {
+      calculate(client_socket_fd, data);
+    }
+    else
+    {
+      printf("No matching pattern detected\n");
+    }
   }
 
-  /*
-   * extraire le code des données envoyées par le client.
-   * Les données envoyées par le client peuvent commencer par le mot "message :" ou un autre mot.
-   */
-  printf("Message recu: %s\n", data);
-  char code[10];
-  sscanf(data, "%s", code);
-
-  // Si le message commence par le mot: 'message:'
-  if (strcmp(code, "message:") == 0)
-  {
-    renvoie_message(client_socket_fd, data);
-  }
-  else
-  {
-    plot(data);
-  }
-
-  // fermer le socket
+    // fermer le socket
   close(socketfd);
+  
   return (EXIT_SUCCESS);
 }
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
 int main()
 {
@@ -161,7 +294,7 @@ int main()
   }
 
   // Écouter les messages envoyés par le client
-  listen(socketfd, 10);
+    listen(socketfd, 10);
 
   // Lire et répondre au client
   recois_envoie_message(socketfd);

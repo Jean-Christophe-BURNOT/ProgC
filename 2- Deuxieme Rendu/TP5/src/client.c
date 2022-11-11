@@ -42,6 +42,7 @@ int envoie_operateur_numeros(char * fichier){
 int envoie_recois_message(int socketfd)
 {
   struct etudiant etudiants[6]; 
+  // permet récupérer toutes les notes et les mettre dans une structure
   for (int i =1; i <=5 ;i++)
   {
     for (int j =1; j <=5 ;j++)
@@ -82,7 +83,7 @@ int envoie_recois_message(int socketfd)
 
     }
   }
-
+  //permet de calculer et d'afficher les moyennes des étudiants
   for (int i =1; i <=5 ;i++)
   {
     int somme = 0;
@@ -163,6 +164,7 @@ int envoie_recois_message(int socketfd)
   }
 
 ///////////////////////////////////////////////////////////////////////////////////////
+  //permet de calculer et d'afficher les moyennes par sujets
  for (int i =1; i <=5 ;i++)
   {
     int somme = 0;
@@ -243,7 +245,8 @@ int envoie_recois_message(int socketfd)
   }
 
 //////////////////////////////////////////////////////////////////////////////////////
-
+  //permet de faire l'exo 5.4 et/ou 5.5
+  // c'est a dire demander au serveur un calcul ou une réponse à un message
   char data[1024];
   // la réinitialisation de l'ensemble des données
   memset(data, 0, sizeof(data));
